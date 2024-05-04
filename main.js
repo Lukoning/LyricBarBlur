@@ -370,11 +370,17 @@ plugin.onConfig(() => {
             transform: translateX(25px);
         }
 
+        #LyricBarBlurSettings input:disabled + .slider::before {
+            background: #888888;
+        }
         #LyricBarBlurSettings input:disabled + .slider:active::before {
             height: 15px;
             width: 15px;
             border-radius: 4px;
         }
+
+        #LyricBarBlurSettings input:disabled:checked + .slider::before {
+            background: var(--lbbs-bg-wot);
 
         #LyricBarBlurSettings .selectMenu {
             padding-left: 5px;
@@ -447,7 +453,7 @@ plugin.onConfig(() => {
         </div>
     </div>
     <div style="font-size: 14px; line-height: 16px; margin: 8px;">
-        <p>Version 0.1.3(BETA) by Lukoning</p>
+        <p>Version 0.1.3-fix1(BETA) by Lukoning</p>
         <input class="link" style="float: right;" type="button" onclick="betterncm.ncm.openUrl('https://github.com/Lukoning/LyricBarBlur')" value="源代码(GitHub)" />
         <br />
         <input class="link" type="button" onclick="betterncm.ncm.openUrl('https://github.com/Lukoning')" value="GitHub" />
