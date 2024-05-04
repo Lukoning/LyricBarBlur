@@ -1,6 +1,26 @@
-let readCfg = JSON.parse(localStorage.getItem("LyricBarBlurSettings"));
+var readCfg = JSON.parse(localStorage.getItem("LyricBarBlurSettings"));
 let crStyle = document.createElement("style");
 let getId = document.getElementById;
+let cfgDefault = ({
+    blur: 12,
+    blurCompel: false,
+    trans: 0.75,
+    color: false,
+    colorRed: 0,
+    colorGreen: 120,
+    colorBlue: 215,
+    colorCompel: false,
+});
+
+function disableSaveCancel(onoff) {
+    if (onoff) {
+        document.getElementById("saveButton").disabled = true;
+        document.getElementById("cancelButton").disabled = true;
+    } else {
+        document.getElementById("saveButton").disabled = false;
+        document.getElementById("cancelButton").disabled = false;
+    }
+}
 
 function resetStyles() { //应用新设置
     let readCfg = JSON.parse(localStorage.getItem("LyricBarBlurSettings"));
@@ -59,18 +79,23 @@ function saveCfg() { //保存设置
         let bName = name + "SetBox";
         console.log("get " + bName);
 
-        var set = document.getElementById(bName).value*1;
-        if (min != "n" && set < min) {
-            set = min;
+        var set = document.getElementById(bName).value;
+        if (set == "undefined" || set == "null") {
+            var set = document.getElementById(bName).placeholder;
+        };
+        var setNum = set*1;
+        if (min != "n" && setNum < min) {
+            setNum = min;
             document.getElementById(bName).value = min;
         }
-        if (max != "n" && set > max) {
-            set = max;
+        if (max != "n" && setNum > max) {
+            setNum = max;
             document.getElementById(bName).value = max;
         };
 
         console.log(bName + " = " + set);
-        return set;
+        console.log(bName + " to " + setNum);
+        return setNum;
     };
 
     //获取开关设置
@@ -83,49 +108,54 @@ function saveCfg() { //保存设置
     };
 
     var blur = getNumSet("blur", 0, "n");
-    var blurC = getSwitchSet("blurCompel");
-    var trans = getNumSet("trans", 0, 100);
+    var blurCompel = getSwitchSet("blurCompel");
+    var trans = getNumSet("trans", 0, 100)/100;
     var color = getSwitchSet("color");
-    var colorR = getNumSet("colorRed", 0, 255);
-    var colorG = getNumSet("colorGreen", 0, 255);
-    var colorB= getNumSet("colorBlue", 0, 255);
-    var colorC = getSwitchSet("colorCompel");
+    var colorRed = getNumSet("colorRed", 0, 255);
+    var colorGreen = getNumSet("colorGreen", 0, 255);
+    var colorBlue = getNumSet("colorBlue", 0, 255);
+    var colorCompel = getSwitchSet("colorCompel");
 
-    writeCfg({
-        blur: blur,
-        blurCompel: blurC,
-        trans: trans/100,
-        color: color,
-        colorRed: colorR,
-        colorGreen: colorG,
-        colorBlue: colorB,
-        colorCompel: colorC,
+    var cfgWillWrite = ({
+        blur,
+        blurCompel,
+        trans,
+        color,
+        colorRed,
+        colorGreen,
+        colorBlue,
+        colorCompel,
     });
+
+    writeCfg(cfgWillWrite);
+    console.log(cfgWillWrite);
+    console.log(cfgDefault);
     console.log("save settings");
     resetStyles();
+    disableSaveCancel(true);
 };
+
+function cancel() {
+    var readCfg = JSON.parse(localStorage.getItem("LyricBarBlurSettings"));
+    document.getElementById("blurSetBox").value = readCfg.blur;
+    document.getElementById("blurCompelSwitch").checked = readCfg.blurCompel;
+    document.getElementById("transSetBox").value = readCfg.trans*100;
+    document.getElementById("colorSwitch").checked = readCfg.color;
+    document.getElementById("colorRedSetBox").value = readCfg.colorRed;
+    document.getElementById("colorGreenSetBox").value = readCfg.colorGreen;
+    document.getElementById("colorBlueSetBox").value = readCfg.colorBlue;
+    document.getElementById("colorCompelSwitch").checked = readCfg.colorCompel;
+    console.log("cancel");
+    console.log(readCfg.blurCompel);
+    console.log(JSON.parse(localStorage.getItem("LyricBarBlurSettings")).blurCompel);
+    disableSaveCancel(true);
+}
 
 function resetCfg() { //重置设置
     localStorage.removeItem("LyricBarBlurSettings");
-    document.getElementById("blurSetBox").value = 12;
-    document.getElementById("blurCompelSwitch").checked = false;
-    document.getElementById("transSetBox").value = 75;
-    document.getElementById("colorSwitch").checked = false;
-    document.getElementById("colorRedSetBox").value = 0;
-    document.getElementById("colorGreenSetBox").value = 0;
-    document.getElementById("colorBlueSetBox").value = 0;
-    document.getElementById("colorCompelSwitch").checked = false;
-    writeCfg({
-        blur: 12,
-        blurCompel: false,
-        trans: 0.75,
-        color: false,
-        colorRed: 0,
-        colorGreen: 0,
-        colorBlue: 0,
-        colorCompel: false,
-    });
+    writeCfg(cfgDefault);
     console.log("reset settings");
+    cancel();
     resetStyles();
 };
 
@@ -194,6 +224,10 @@ plugin.onConfig(() => {
             color: var(--lbbs-bg-wot);
             background: var(--lbbs-fg);
         }
+        #LyricBarBlurSettings :disabled::selection {
+            color: #000000;
+            background: #888888;
+        }
 
         #LyricBarBlurSettings .secondLayers {
             outline: 0;
@@ -227,6 +261,34 @@ plugin.onConfig(() => {
             box-shadow: 0px 0px 8px var(--lbbs-fg);
         }
 
+        #LyricBarBlurSettings .button:disabled {
+            color: #888888;
+            box-shadow: 0px 0px 3px #888888;
+            border: 1px solid #888888;
+            background: var(--lbbs-bg);
+        }
+        #LyricBarBlurSettings .button:disabled:hover {
+            box-shadow: 0px 0px 6px #888888;
+        }
+        #LyricBarBlurSettings .button:disabled:active {
+            font-size: 16px;
+            border-width: 1px;
+            box-shadow: 0px 0px 6px #888888;
+        }
+
+        #LyricBarBlurSettings .buttonGroupLeft {
+            border-radius: 10px 0px 0px 10px;
+            float: left;
+        }
+        #LyricBarBlurSettings .buttonGroupMiddle {
+            border-radius: 0px;
+            float: left;
+        }
+        #LyricBarBlurSettings .buttonGroupRight {
+            border-radius: 0px 10px 10px 0px;
+            float: left;
+        }
+
         #LyricBarBlurSettings .textBox {
             padding: 10px;
         }
@@ -254,10 +316,11 @@ plugin.onConfig(() => {
             height: 25px;
             margin: 12.5px 0px;
             border-radius: 8px;
-            transition: 0.1s;
+            transition: 0.2s, box-shadow 0.1s;
         }
         #LyricBarBlurSettings .slider:active {
             border-width: 3px;
+            transition: 0.1s;
         }
 
         #LyricBarBlurSettings input:checked + .slider {
@@ -266,6 +329,22 @@ plugin.onConfig(() => {
         }
         #LyricBarBlurSettings input:checked + .slider:active {
             border-width: 3px;
+        }
+
+        #LyricBarBlurSettings input:disabled + .slider {
+            border: 1px solid #888888;
+            box-shadow: 0px 0px 3px #888888;
+        }
+        #LyricBarBlurSettings input:disabled + .slider:hover {
+            box-shadow: 0px 0px 6px #888888;
+        }
+        #LyricBarBlurSettings input:disabled + .slider:active {
+            border-width: 1px;
+            box-shadow: 0px 0px 6px #888888;
+        }
+        #LyricBarBlurSettings input:disabled:checked + .slider {
+            border: 1px solid #909090;
+            background: #888888;
         }
 
         #LyricBarBlurSettings .slider::before {
@@ -277,12 +356,13 @@ plugin.onConfig(() => {
             bottom: 4px;
             border-radius: 4px;
             background: var(--lbbs-fg);
-            transition: 0.1s;
+            transition: 0.2s;
         }
         #LyricBarBlurSettings .slider:active::before {
             height: 11px;
             width: 11px;
             border-radius: 3px;
+            transition: 0.1s;
         }
 
         #LyricBarBlurSettings input:checked + .slider::before {
@@ -290,17 +370,10 @@ plugin.onConfig(() => {
             transform: translateX(25px);
         }
 
-        #LyricBarBlurSettings .buttonGroupLeft {
-            border-radius: 10px 0px 0px 10px;
-            float: left;
-        }
-        #LyricBarBlurSettings .buttonGroupMiddle {
-            border-radius: 0px;
-            float: left;
-        }
-        #LyricBarBlurSettings .buttonGroupRight {
-            border-radius: 0px 10px 10px 0px;
-            float: left;
+        #LyricBarBlurSettings input:disabled + .slider:active::before {
+            height: 15px;
+            width: 15px;
+            border-radius: 4px;
         }
 
         #LyricBarBlurSettings .selectMenu {
@@ -318,8 +391,16 @@ plugin.onConfig(() => {
         <p style="font-size: 40px; line-height: 80px;">LyricBarBlur 设置</p>
         <br />
         <p>为LyricBar添加背景模糊</p>
+        <div style="float: right;">
+            <p>总开关</p>
+            <label class="switch">
+                <input id="mainSwitch" type="checkbox" checked disabled/>
+                <span class="slider button"></span>
+            </label>
+        </div>
         <br />
-        <input class="button buttonGroupLeft" id="saveButton" type="button" value="应用" />
+        <input class="button buttonGroupLeft" id="saveButton" type="button" value="应用" disabled/>
+        <input class="button buttonGroupMiddle" id="cancelButton" type="button" value="撤销" disabled/>
         <input class="button buttonGroupRight" id="resetButton" type="button" value="恢复默认" />
         <br />
         <div class="secondLayers">
@@ -329,7 +410,7 @@ plugin.onConfig(() => {
             <p>px</p>
             <br />
             <label class="switch">
-                <input id="blurCompelSwitch" type="checkbox" ` + blurCompelSwitchChecked + `>
+                <input id="blurCompelSwitch" type="checkbox" ` + blurCompelSwitchChecked + `/>
                 <span class="slider button"></span>
             </label>
             <p>覆盖其他插件的设置</p>
@@ -343,28 +424,30 @@ plugin.onConfig(() => {
             <p>%</p>
             <br />
             <div class="secondLayers">
-                <label class="switch">
-                    <input id="colorSwitch" type="checkbox" ` + colorSwitchChecked + `>
-                    <span class="slider button"></span>
-                </label>
-                <p>自定义背景颜色</p>
-                <br />
-                <p style="color: #F00; text-shadow: 0px 1px 10px #F00;">R</p>
-                <input class="button textBox" style="width: 90px" id="colorRedSetBox" type="number" step="1" value="` + readCfg.colorRed + `"/>
-                <p style="color: #0F0; text-shadow: 0px 1px 10px #0F0;">G</p>
-                <input class="button textBox" style="width: 90px" id="colorGreenSetBox" type="number" step="1" value="` + readCfg.colorGreen + `"/>
-                <p style="color: #00F; text-shadow: 0px 1px 10px #00F;">B</p>
-                <input class="button textBox" style="width: 90px" id="colorBlueSetBox" type="number" step="1" value="` + readCfg.colorBlue + `"/>
+                <div class="switchBinding">
+                    <label class="switch">
+                        <input id="colorSwitch" type="checkbox" ` + colorSwitchChecked + `/>
+                        <span class="slider button"></span>
+                    </label>
+                    <p>自定义背景颜色</p>
+                    <br />
+                    <p style="color: #F00; text-shadow: 0px 1px 10px #F00;">R</p>
+                    <input class="button textBox" style="width: 90px" id="colorRedSetBox" type="number" step="1" placeholder="0" value="` + readCfg.colorRed + `"/>
+                    <p style="color: #0F0; text-shadow: 0px 1px 10px #0F0;">G</p>
+                    <input class="button textBox" style="width: 90px" id="colorGreenSetBox" type="number" step="1" placeholder="120" value="` + readCfg.colorGreen + `"/>
+                    <p style="color: #00F; text-shadow: 0px 1px 10px #00F;">B</p>
+                    <input class="button textBox" style="width: 90px" id="colorBlueSetBox" type="number" step="1" placeholder="215" value="` + readCfg.colorBlue + `"/>
+                </div>
             </div>
             <label class="switch">
-                <input id="colorCompelSwitch" type="checkbox" ` + colorCompelSwitchChecked + `>
+                <input id="colorCompelSwitch" type="checkbox" ` + colorCompelSwitchChecked + `/>
                 <span class="slider button"></span>
             </label>
             <p>覆盖其他插件的设置</p>
         </div>
     </div>
     <div style="font-size: 14px; line-height: 16px; margin: 8px;">
-        <p>Version 0.1.2 by Lukoning</p>
+        <p>Version 0.1.3(BETA) by Lukoning</p>
         <input class="link" style="float: right;" type="button" onclick="betterncm.ncm.openUrl('https://github.com/Lukoning/LyricBarBlur')" value="源代码(GitHub)" />
         <br />
         <input class="link" type="button" onclick="betterncm.ncm.openUrl('https://github.com/Lukoning')" value="GitHub" />
@@ -372,14 +455,28 @@ plugin.onConfig(() => {
         <input class="link" style="float: right;" type="button" onclick="betterncm.ncm.openUrl('https://github.com/Lukoning/LyricBarBlur/issues')" value="问题反馈(GitHub issues)" />
     </div>
     `;
-    //创建监听器(因为用不了onclick)
+    //创建监听器
+    let allSets = crCfgPage.querySelectorAll(".textBox, .switch");
+    //let allSwitchBinding = crCfgPage.querySelectorAll(".switchBinding .switch input");
+
+    var i;
+    for (i = 0; i < allSets.length; i++) {
+        allSets[i].addEventListener("change", () => {
+            disableSaveCancel(false);
+        });
+    }
+    /*for (i = 0; i < allSwitchBinding.length; i++) {
+        allSwitchBinding[i].addEventListener("change", () => {
+        });
+    }*/
+
     let saveBt = crCfgPage.querySelector("#saveButton");
+    let cancelBt = crCfgPage.querySelector("#cancelButton");
     let resetBt = crCfgPage.querySelector("#resetButton");
-    saveBt.addEventListener("click", () => {
-        saveCfg();
-    });
-    resetBt.addEventListener("click", () => {
-        resetCfg();
-    });
+    saveBt.addEventListener("click", saveCfg);
+    cancelBt.addEventListener("click", cancel);
+    resetBt.addEventListener("click", resetCfg);
+
+    console.log(crCfgPage)
     return crCfgPage;
 });
