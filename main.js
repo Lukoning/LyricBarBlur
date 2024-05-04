@@ -381,6 +381,7 @@ plugin.onConfig(() => {
 
         #LyricBarBlurSettings input:disabled:checked + .slider::before {
             background: var(--lbbs-bg-wot);
+        }
 
         #LyricBarBlurSettings .selectMenu {
             padding-left: 5px;
