@@ -13,17 +13,17 @@ let cfgDefault = ({
     customFonts: "\"华文彩云\"",
     textTrans: 1,
     textColor: false,
-    textRed: 0,
-    textGreen: 120,
-    textBlue: 215,
+    textRed: 255,
+    textGreen: 255,
+    textBlue: 255,
     textCompel: false,
-    bdWidth: 0,
-    bdTrans: 1,
+    bdWidth: 1,
+    bdTrans: 0.05,
     bdRadius: 12,
     bdColor: "custom",
-    bdRed: 0,
-    bdGreen: 120,
-    bdBlue: 215,
+    bdRed: 255,
+    bdGreen: 255,
+    bdBlue: 255,
     bdCompel: false,
     centerOfBottom: false,
     doNotHideWithoutLyrics: false,
@@ -108,17 +108,31 @@ function resetStyles() { //应用新设置
     var cssFontsCustom = `
         font-family: ` + readCfg.customFonts + `;
     `;
-    var cssTextTrans = `
+    /*var cssTextTrans = `
         opacity: ` + readCfg.textTrans + isTextCompel + `;
+    `;*/
+    var cssTextTransAll = `
+    .lyric-bar .rnp-lyrics .rnp-lyrics-line[offset="0"] > div > div.rnp-lyrics-line-karaoke .rnp-karaoke-word {
+        opacity: ` + readCfg.textTrans + isTextCompel + `;
+    }
+    .lyric-bar .rnp-lyrics .rnp-lyrics-line:not([offset="0"]) > div > div.rnp-lyrics-line-karaoke .rnp-karaoke-word {
+        opacity: ` + readCfg.textTrans/2.5 + isTextCompel + `;
+    }
+    .lyric-bar .rnp-lyrics .rnp-lyrics-line .rnp-lyrics-single-line-wrapper > *:not(.rnp-lyrics-line-karaoke) {
+        opacity: ` + readCfg.textTrans + isTextCompel + `;
+    }
+    .lyric-bar .rnp-lyrics .rnp-lyrics-line.rnp-interlude[offset="0"] .rnp-interlude-inner {
+        opacity: ` + readCfg.textTrans + isTextCompel + `;
+    } 
     `;
     var cssTextCustom = `
         --lbb-custom-text-color: rgb(` + readCfg.textRed + `,` + readCfg.textGreen + `,` + readCfg.textBlue + `) ` + isTextCompel + `;
         --rnp-accent-color-shade-2: var(--lbb-custom-text-color);
         color: var(--lbb-custom-text-color);
     `;
-    var cssBdDefault = `
+    /*var cssBdDefault = `
         border: ` + readCfg.bdWidth + `px solid rgba(var(--md-accent-color-rgb),` + readCfg.bdTrans +`) ` + isBdCompel + `;
-    `;
+    `;*/
     var cssBdCustom = `
         border: ` + readCfg.bdWidth + `px solid rgba(` + readCfg.bdRed + `,` + readCfg.bdGreen + `,` + readCfg.bdBlue + `,` + readCfg.bdTrans +`) ` + isBdCompel + `;
     `;
@@ -126,15 +140,16 @@ function resetStyles() { //应用新设置
         border-radius: ` + readCfg.bdRadius + `px ` + isBdCompel + `;
     `;
     var cssCob = `
-        width: clamp(200px, 100%, 100vw - var(--sidebar-width, 199px) - 3px);
-        left: calc(var(--leftbar-width, 199px) + var(--extra-pos-margin, 0px)) !important;
-        right: calc(var(--extra-pos-margin, 0px)) !important;
+        width: clamp(200px, 100%, 100vw - var(--sidebar-width, 199px) - calc(2px * ` + readCfg.bdWidth + `px) - 3px);
+        top: unset !important;
+        right: calc(2px + var(--extra-pos-margin, 0px)) !important;
         bottom: calc(var(--bottombar-height, 72px) + var(--bottombar-elevation, 0px)) !important;
+        left: calc(var(--leftbar-width, 199px) + var(--extra-pos-margin, 0px)) !important;
         margin: 0 auto !important;
         border-bottom-width: 0 !important;
         border-bottom-left-radius: 0 !important;
         border-bottom-right-radius: 0 !important; 
-    `;
+    `; 
     var cssLbMl3 =`
         height: calc(var(--lyric-bar-height)*3);
     `;
@@ -170,7 +185,14 @@ function resetStyles() { //应用新设置
     }
 
     var cssIn = cssIn + cssEnd;
-    var cssIn = cssIn + cssLbiTop + cssTextTrans;
+
+    /*if (readCfg.textCompel) {
+        var cssTextTrans = "";
+    } else {
+        var cssTextTransAll = "";
+    }*/
+    var cssIn = cssIn + cssTextTransAll;
+    var cssIn = cssIn + cssLbiTop/* + cssTextTrans*/;
     if (readCfg.textColor) { 
         var cssIn = cssIn + cssTextCustom;
     }
@@ -536,13 +558,13 @@ plugin.onConfig(() => {
         var defaultFont = `"华文彩云"`;
         var customFonts = defaultFont.replaceAll("\"", "&quot;");
         var textColorSetBoxDisable = "Disabled";
-        var bdWidth = 0
-        var bdTrans = 100
+        var bdWidth = 1
+        var bdTrans = 5
         var bdRadius = 12
         var bdColorRadioCheck = "Checked";
-        var bdRed = 0
-        var bdGreen = 120
-        var bdBlue = 215
+        var bdRed = 255
+        var bdGreen = 255
+        var bdBlue = 255
         //var bdColorSetBoxDisable = "Disabled";
     };
 
@@ -556,7 +578,8 @@ plugin.onConfig(() => {
             --lbbs-bg: rgba(var(--md-accent-color-bg-rgb, var(--ncm-bg-rgb)), .3);
             --lbbs-bg-wot: rgba(var(--md-accent-color-bg-rgb, var(--ncm-bg-rgb)), 1);
             color: var(--md-accent-color-secondary, var(--ncm-text));
-            margin: 0 0 120px 0;
+            width: 420px;
+            margin: 0 auto 120px 0;
             line-height: 45px;
             font-size: 16px;
         }
@@ -575,6 +598,7 @@ plugin.onConfig(() => {
         }
 
         #LyricBarBlurSettings .part {
+            display: inline-block;
             width: 420px;
             outline: 0;
             margin: 5px 0 0 0;
@@ -817,18 +841,35 @@ plugin.onConfig(() => {
             background: rgba(0, 0, 0, 0);
             border: 0 solid;
         }
+    
+        /*@media (min-width: 1333px) {
+            #LyricBarBlurSettings {
+                width: 845px;
+            }
+                #LyricBarBlurSettings .topBar {
+                padding: 5px 280px;
+            }
+        }
+        @media (min-width: 1777px) {
+            #LyricBarBlurSettings {
+                width: 1280px;
+            }
+                #LyricBarBlurSettings .topBar {
+                padding: 5px 490px;
+            }
+        }*/
     </style>
     <div class="part">
         <p style="font-size: 40px; line-height: 80px;">LyricBarBlur 设置</p>
         <br />
         <p>修改LyricBar外观，比如…添加背景模糊？</p>
         <br />
-        <div>
+        <div float: right;>
+            <p>总开关</p>
             <label class="switch">
                 <input id="mainSwitch" type="checkbox" />
                 <span class="slider button"></span>
             </label>
-            <p>总开关</p>
         </div>
     </div>
     <div class="topBar">
@@ -916,12 +957,12 @@ plugin.onConfig(() => {
                     <input type="radio" id="fontsCustomRadio" name="fonts" value="custom" ` + fontsCustomRadioCheck + ` />
                     <span class="slider button"></span>
                 </label>
-                <p>使用自定义字体</p>
+                <p>使用自定义字体(CSS font-family)</p>
                 <br />
                 <input class="button textBox" id="fontsSetBox" type="search" placeholder='"华文彩云"' value="` + customFonts + `" ` + fontsSetBoxDisable + `/>
             </div>
         <div class="parting"></div>
-            <p>文本不透明度</p>  
+            <p>文本不透明度(测试)</p>  
             <br />
             <input class="button textBox" id="textTransSetBox" type="number" step="1" placeholder="100" value="` + textTrans + `"/>
             <p>%</p>
@@ -935,11 +976,11 @@ plugin.onConfig(() => {
                 </label>
                 <br />
                 <p style="color: #F00; text-shadow: 0 1px 10px #F00;">R</p>
-                <input class="button textBox" id="textRedSetBox" type="number" step="1" placeholder="0" value="` + textRed + `" ` + textColorSetBoxDisable + `/>
+                <input class="button textBox" id="textRedSetBox" type="number" step="1" placeholder="255" value="` + textRed + `" ` + textColorSetBoxDisable + `/>
                 <p style="color: #0F0; text-shadow: 0 1px 10px #0F0;">G</p>
-                <input class="button textBox" id="textGreenSetBox" type="number" step="1" placeholder="120" value="` + textGreen + `" ` + textColorSetBoxDisable + `/>
+                <input class="button textBox" id="textGreenSetBox" type="number" step="1" placeholder="255" value="` + textGreen + `" ` + textColorSetBoxDisable + `/>
                 <p style="color: #00F; text-shadow: 0 1px 10px #00F;">B</p>
-                <input class="button textBox" id="textBlueSetBox" type="number" step="1" placeholder="215" value="` + textBlue + `" ` + textColorSetBoxDisable + `/>
+                <input class="button textBox" id="textBlueSetBox" type="number" step="1" placeholder="255" value="` + textBlue + `" ` + textColorSetBoxDisable + `/>
             </div>
     </div>
     <div class="part">
@@ -954,12 +995,12 @@ plugin.onConfig(() => {
         <div class="parting"></div>
             <p>边框宽度</p>
             <br />
-            <input class="button textBox" id="bdWidthSetBox" type="number" step="1" placeholder="0" value="` + bdWidth + `"/>
+            <input class="button textBox" id="bdWidthSetBox" type="number" step="1" placeholder="1" value="` + bdWidth + `"/>
             <p>px</p>
             <br />
             <p>边框不透明度</p>
             <br />
-            <input class="button textBox" id="bdTransSetBox" type="number" step="1" placeholder="100" value="` + bdTrans + `"/>
+            <input class="button textBox" id="bdTransSetBox" type="number" step="1" placeholder="5" value="` + bdTrans + `"/>
             <p>%</p>
             <br />
             <p>圆角大小</p>
@@ -990,11 +1031,11 @@ plugin.onConfig(() => {
                 <p>自定义颜色</p>
                 <br />
                 <p style="color: #F00; text-shadow: 0 1px 10px #F00;">R</p>
-                <input class="button textBox" id="bdRedSetBox" type="number" step="1" placeholder="0" value="` + bdRed + `" ` + bdColorSetBoxDisable + `/>
+                <input class="button textBox" id="bdRedSetBox" type="number" step="1" placeholder="255" value="` + bdRed + `" ` + bdColorSetBoxDisable + `/>
                 <p style="color: #0F0; text-shadow: 0 1px 10px #0F0;">G</p>
-                <input class="button textBox" id="bdGreenSetBox" type="number" step="1" placeholder="120" value="` + bdGreen + `" ` + bdColorSetBoxDisable + `/>
+                <input class="button textBox" id="bdGreenSetBox" type="number" step="1" placeholder="255" value="` + bdGreen + `" ` + bdColorSetBoxDisable + `/>
                 <p style="color: #00F; text-shadow: 0 1px 10px #00F;">B</p>
-                <input class="button textBox" id="bdBlueSetBox" type="number" step="1" placeholder="215" value="` + bdBlue + `" ` + bdColorSetBoxDisable + `/>
+                <input class="button textBox" id="bdBlueSetBox" type="number" step="1" placeholder="255" value="` + bdBlue + `" ` + bdColorSetBoxDisable + `/>
             </div>
     </div>
     <div class="part">
@@ -1019,7 +1060,7 @@ plugin.onConfig(() => {
             <p>显示多行歌词(测试)</p>
     </div>
     <div class="part" style="font-size: 14px; line-height: 16px;">
-        <p>Version 0.2.3</p>
+        <p>Version 0.2.4</p>
         <input class="link" style="float: right;" type="button" onclick="betterncm.ncm.openUrl('https://github.com/Lukoning/LyricBarBlur')" value="源代码(GitHub)" />
         <br />
         <p>by Lukoning</p>
