@@ -120,7 +120,6 @@ function resetStyles() { //应用新设置
         font-family: ` + readCfg.customFonts + `;
     `;
     var cssTextTrans = `
-        opacity: ` + readCfg.textTrans*1.6 + isTextCompel + `;
     `;
     var cssTextTransAll = `
     .lyric-bar .rnp-lyrics .rnp-lyrics-line[offset="0"] > div > div.rnp-lyrics-line-karaoke .rnp-karaoke-word {
@@ -137,8 +136,10 @@ function resetStyles() { //应用新设置
     } 
     `;
     var cssTextCustom = `
-        --lbb-custom-text-color: rgb(` + readCfg.textRed + `,` + readCfg.textGreen + `,` + readCfg.textBlue + `);
-        --rnp-accent-color-shade-2: var(--lbb-custom-text-color);
+        --lbb-custom-text-color: rgba(` + readCfg.textRed + `,` + readCfg.textGreen + `,` + readCfg.textBlue + `,` + readCfg.textTrans + `);
+    `;
+    var cssTextCustomLbi = `
+        --rnp-accent-color-shade-2: var(--lbb-custom-text-color) ` + isTextCompel + `;
         color: var(--lbb-custom-text-color) ` + isTextCompel + `;
     `;
     var cssTextOlShadow = `
@@ -158,13 +159,17 @@ function resetStyles() { //应用新设置
     var cssPadding = `
         padding: ` + readCfg.padding + `px ` + isBdCompel + `;
     `;
+    var cssBdWidth = `
+        border: ` + readCfg.bdWidth + `px solid;
+    `;
     var cssBdDefault = `
-        border: ` + readCfg.bdWidth + `px solid rgba(var(--theme-C1-rgb),` + readCfg.bdTrans +`) ` + isBdCompel + `;
+        border-color: var(--themeC1) ` + isBdCompel + `;
     `;
     var cssBdText = `
+        border-color: var(--lbb-custom-text-color, var(--md-accent-color, var(--ncm-text)));
     `;
     var cssBdCustom = `
-        border: ` + readCfg.bdWidth + `px solid rgba(` + readCfg.bdRed + `,` + readCfg.bdGreen + `,` + readCfg.bdBlue + `,` + readCfg.bdTrans +`) ` + isBdCompel + `;
+        border-color: rgba(` + readCfg.bdRed + `,` + readCfg.bdGreen + `,` + readCfg.bdBlue + `,` + readCfg.bdTrans +`) ` + isBdCompel + `;
     `;
     var cssBdRadius = `
         border-radius: ` + readCfg.bdRadius + `px ` + isBdCompel + `;
@@ -227,12 +232,16 @@ function resetStyles() { //应用新设置
     }
     `;
 
-    var cssIn = cssLbTop + cssBgBlur + cssPadding + cssBdCustom + cssBdRadius;
+    var cssIn = cssLbTop + cssBgBlur + cssPadding + cssBdRadius;
 
     if (readCfg.bgColor || readCfg.color) {
         var cssIn = cssIn + cssBgCustom;
     } else {
         var cssIn = cssIn + cssBgDefault;
+    }
+
+    if (readCfg.textColor) { 
+        var cssIn = cssIn + cssTextCustom;
     }
 
     if (readCfg.textOl) {
@@ -244,6 +253,18 @@ function resetStyles() { //应用新设置
             var cssIn = cssIn + cssTextOlStroke;
         }
         console.log(olw);
+    }
+
+    var bdc = readCfg.bdColor
+    var cssIn = cssIn + cssBdWidth;
+    if (bdc == "default") {
+        var cssIn = cssIn + cssBdDefault;
+    }
+    if (bdc == "text") {
+        var cssIn = cssIn + cssBdText;
+    }
+    if (bdc == "custom") {
+        var cssIn = cssIn + cssBdCustom;
     }
 
     var f = readCfg.fonts;
@@ -276,15 +297,15 @@ function resetStyles() { //应用新设置
 
     var cssIn = cssIn + cssEnd;
 
-    if (readCfg.textCompel) {
-        var cssTextTrans = " ";
-    } else {
+    if (readCfg.textColor) {
         var cssTextTransAll = " ";
     }
     var cssIn = cssIn + cssTextTransAll;
-    var cssIn = cssIn + cssLbiTop + cssTextTrans;
+
+    var cssIn = cssIn + cssLbiTop;
+
     if (readCfg.textColor) { 
-        var cssIn = cssIn + cssTextCustom;
+        var cssIn = cssIn + cssTextCustomLbi;
     }
 
     if (f == "custom") {
@@ -693,14 +714,21 @@ plugin.onConfig(() => {
         if (readCfg.bdCompel) {
             var bdCompelSwitchCheck = "Checked";
         }
-        if (readCfg.bdColor) {
+        var bdc = readCfg.bdColor;
+        var bdColorSetBoxDisable = "Disabled";
+        if (bdc == "default") {
+            var bdColorDefaultRadioCheck = "Checked";
+        } else if (bdc == "text") {
+            var bdColorTextRadioCheck = "Checked";
+        } else if (bdc == "custom") {
             var bdColorCustomRadioCheck = "Checked";
-        } else {
-            var bdColorSetBoxDisable = "Disabled";
+            var bdColorSetBoxDisable = "";
         }
 
         if (readCfg.isWidthEnable) {
             var widthSwitchCheck = "Checked";
+        } else {
+            var widthCustomSetBoxDisable = "Disabled";
         }
         if (readCfg.centerOfBottom) {
             var centerOfBottomSwitchCheck = "Checked";
@@ -754,6 +782,7 @@ plugin.onConfig(() => {
         var textGreen = 255
         var textBlue = 255
         var fontsDefaultRadioCheck = "Checked";
+        var fontsSetBoxDisable = "Disabled";
         var defaultFont = `"华文彩云"`;
         var customFonts = defaultFont.replaceAll("\"", "&quot;");
         var textColorSetBoxDisable = "Disabled";
@@ -762,6 +791,7 @@ plugin.onConfig(() => {
         var textOlWidth = 0.5
         var textOlTrans = 1
         var textOlColorCustomRadioCheck = "Checked";
+        var textOlColorSetBoxDisable = "Disabled";
         var textOlRed = 0
         var textOlGreen = 0
         var textOlBlue = 0
@@ -774,6 +804,7 @@ plugin.onConfig(() => {
         var bdGreen = 255
         var bdBlue = 255
         //var bdColorSetBoxDisable = "Disabled";
+        var widthCustomSetBoxDisable = "Disabled";
         var widthCustom = 400
         var doNotHideWithoutLyricsSwitchCheck = "Checked";
     };
@@ -1047,7 +1078,7 @@ plugin.onConfig(() => {
         #LyricBarBlurSettings .link {
             text-decoration: underline;
             cursor: pointer;
-            color: var(--lbbs-fg);
+            color: var(--lbbs-fg) !important;
             background: rgba(0, 0, 0, 0);
             border: 0 solid;
         }
@@ -1270,19 +1301,19 @@ plugin.onConfig(() => {
             <p>px</p>
             <br />
             <p>边框颜色</p>
-            <br /> <!---
-            <label class="radio">
-                <input type="radio" id="bdColorDefaultRadio" name="bdColor" value="default" disabled/>
-                <span class="slider button"></span>
-            </label>
-            <p>使用主题色（咕咕咕）</p>
             <br />
             <label class="radio">
-                <input type="radio" id="bdColorTextRadio" name="bdColor" value="text" disabled/>
+                <input type="radio" id="bdColorDefaultRadio" name="bdColor" value="default" ` + bdColorDefaultRadioCheck +`/>
                 <span class="slider button"></span>
             </label>
-            <p>使用文本色（咕咕咕）</p>
-            <br /> ---!>
+            <p>使用主题色(不支持修改透明度咕咕咕)</p>
+            <br />
+            <label class="radio">
+                <input type="radio" id="bdColorTextRadio" name="bdColor" value="text" ` + bdColorTextRadioCheck +`/>
+                <span class="slider button"></span>
+            </label>
+            <p>使用文本色(也不支持修改透明度口古)</p>
+            <br />
             <div class="switchBinding">
                 <label class="radio">
                     <input type="radio" id="bdColorCustomRadio" name="bdColor" value="custom" ` + bdColorCustomRadioCheck +`/>
@@ -1311,7 +1342,7 @@ plugin.onConfig(() => {
                 <div style="font-size: 14px; line-height: 16px;">
                     <p>(而不是拽着边框拖来拖去)</p>
                 </div>
-                <input class="button textBox" id="widthCustomSetBox" type="number" step="1" placeholder="400" value="` + widthCustom + `"/>
+                <input class="button textBox" id="widthCustomSetBox" type="number" step="1" placeholder="400" value="` + widthCustom + `" ` + widthCustomSetBoxDisable + `/>
                 <p>px</p>
                 <br />
             </div>
@@ -1346,7 +1377,7 @@ plugin.onConfig(() => {
             <br />
     </div>
     <div class="part" style="font-size: 14px; line-height: 16px;">
-        <p>Version 0.2.4.1</p>
+        <p>Version 0.2.5</p>
         <input class="link" style="float: right;" type="button" onclick="betterncm.ncm.openUrl('https://github.com/Lukoning/LyricBarBlur')" value="源代码(GitHub)" />
         <br />
         <p>by Lukoning</p>
