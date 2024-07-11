@@ -685,7 +685,7 @@ plugin.onConfig(() => {
             var textOlWayStrokeRadioCheck = "Checked";
         }
         if (readCfg.textOlColor) {
-            var textOlColorRadioCheck = "Checked";
+            var textOlColorCustomRadioCheck = "Checked";
         } else {
             var textOlColorSetBoxDisable = "Disabled";
         }
@@ -694,7 +694,7 @@ plugin.onConfig(() => {
             var bdCompelSwitchCheck = "Checked";
         }
         if (readCfg.bdColor) {
-            var bdColorRadioCheck = "Checked";
+            var bdColorCustomRadioCheck = "Checked";
         } else {
             var bdColorSetBoxDisable = "Disabled";
         }
@@ -750,16 +750,18 @@ plugin.onConfig(() => {
             var bgColorSetBoxDisable = "Disabled";
         };
         var textTrans = 100
-        var textRed = 0
-        var textGreen = 120
-        var textBlue = 215
+        var textRed = 255
+        var textGreen = 255
+        var textBlue = 255
         var fontsDefaultRadioCheck = "Checked";
         var defaultFont = `"华文彩云"`;
         var customFonts = defaultFont.replaceAll("\"", "&quot;");
         var textColorSetBoxDisable = "Disabled";
+        var textOlSetsDisable = "Disabled";
         var textOlWayShadowRadioCheck = "Checked";
         var textOlWidth = 0.5
         var textOlTrans = 1
+        var textOlColorCustomRadioCheck = "Checked";
         var textOlRed = 0
         var textOlGreen = 0
         var textOlBlue = 0
@@ -767,7 +769,7 @@ plugin.onConfig(() => {
         var bdWidth = 1
         var bdTrans = 5
         var bdRadius = 12
-        var bdColorRadioCheck = "Checked";
+        var bdColorCustomRadioCheck = "Checked";
         var bdRed = 255
         var bdGreen = 255
         var bdBlue = 255
@@ -1223,7 +1225,7 @@ plugin.onConfig(() => {
                 <p>文本描边颜色</p>
                 <div class="switchBinding">
                     <label class="radio">
-                        <input type="radio" id="textOlColorCustomRadio" name="textOlColor" value="custom" ` + textOlColorRadioCheck + ` ` + textOlSetsDisable + `/>
+                        <input type="radio" id="textOlColorCustomRadio" name="textOlColor" value="custom" ` + textOlColorCustomRadioCheck + ` ` + textOlSetsDisable + `/>
                         <span class="slider button"></span>
                     </label>
                     <p>自定义颜色</p>
@@ -1283,7 +1285,7 @@ plugin.onConfig(() => {
             <br /> ---!>
             <div class="switchBinding">
                 <label class="radio">
-                    <input type="radio" id="bdColorCustomRadio" name="bdColor" value="custom" ` + bdColorRadioCheck +`/>
+                    <input type="radio" id="bdColorCustomRadio" name="bdColor" value="custom" ` + bdColorCustomRadioCheck +`/>
                     <span class="slider button"></span>
                 </label>
                 <p>自定义颜色</p>
@@ -1344,7 +1346,7 @@ plugin.onConfig(() => {
             <br />
     </div>
     <div class="part" style="font-size: 14px; line-height: 16px;">
-        <p>Version 0.2.4</p>
+        <p>Version 0.2.4.1</p>
         <input class="link" style="float: right;" type="button" onclick="betterncm.ncm.openUrl('https://github.com/Lukoning/LyricBarBlur')" value="源代码(GitHub)" />
         <br />
         <p>by Lukoning</p>
