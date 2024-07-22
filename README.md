@@ -2,8 +2,8 @@
 
 效果预览↓
 
+![屏幕截图 2024-07-22 134414](https://github.com/user-attachments/assets/4142138b-0291-42cf-8bbc-508ecbcf9b66)
 ![屏幕截图 2024-07-22 133129](https://github.com/user-attachments/assets/db6f5023-4932-4132-9280-bc920b95c72f)
-![屏幕截图 2024-07-20 180040](https://github.com/user-attachments/assets/d2e1940b-2376-4ef2-ba56-9967e8489f03)
 ![屏幕截图 2024-07-21 171557](https://github.com/user-attachments/assets/4ac4b2b1-9064-4996-86af-a7e143359632)
 ![preview.png](https://raw.githubusercontent.com/Lukoning/LyricBarBlur/dist/preview.png)
 ![屏幕截图 2024-07-10 210124](https://github.com/Lukoning/LyricBarBlur/assets/92252063/3e60b9f1-b676-4ccf-abd5-7c43aba4ffef)
