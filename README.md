@@ -1,4 +1,4 @@
-更新日志请见Releases
+更新日志请见[Releases](https://github.com/Lukoning/LyricBarBlur/releases "Releases")
 
 效果预览↓
 
