@@ -1,3 +1,5 @@
+# LyricBarBlur
+
 更新日志请见[Releases](https://github.com/Lukoning/LyricBarBlur/releases)
 
 效果预览↓
